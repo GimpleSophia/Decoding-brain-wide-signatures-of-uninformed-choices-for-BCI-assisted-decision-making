@@ -1,7 +1,7 @@
 # Readme- Decoding brain-wide signatures of uninformed choices for BCI assisted decision-making
 
 The paper corresponding to the code can be found at ....
-The data corresponding to the code can be found at ...
+The data corresponding to the code can be found at https://doi.org/10.17605/OSF.IO/PEX8R
 
 
 ## Packages for analysis skripts
