@@ -120,9 +120,10 @@ if __name__=='__main__':
     #we summarize all behavioral results in a dataframe                
     behavioral_results=pd.DataFrame({"participant":participant_list_results,"trial":trial_number,"label":labels,
     "is_correct":correct_answer,"time_first_response":time_arr_first})
+    behavioral_results["time_faster_one_second"]=behavioral_results["time_first_response"]>1
     # Drop rows with NaNs in critical columns
     behavioral_results = behavioral_results.dropna(subset=['is_correct', 'time_first_response', 'label'])
-
+    behavioral_results.to_csv(path_to_data+"/behaverioal_results.csv")
     ## Plotting accuracy
     # We want to plot the accuracy over the 3 presentations both as a mean over participants but also for individual participants
     
@@ -197,15 +198,30 @@ if __name__=='__main__':
 
     print(summary)
 
+    accuracy_df["label"] = pd.to_numeric(accuracy_df["label"])
+    #lme to test for differences between first, second and third presentation in accuracy
+    lme = smf.mixedlm("accuracy ~ label", data=accuracy_df, groups=accuracy_df["participant"])
+        #we fit the model
+    lme_result = lme.fit()
+    coefs = lme_result.summary().tables[1]
+    print(coefs)
 
+       # We use tukey posthoc tests to test for differneces between label pairs
+    tukey = pairwise_tukeyhsd(
+        endog=accuracy_df['accuracy'],  # dependent variable
+        groups=accuracy_df['label'],              # factor
+        alpha=0.05
+    )
+    #we print the summary
+    print(tukey.summary())
 
     # We use pivot to get paired data per participant
     pivot_df = accuracy_df.pivot(index='participant', columns='label', values='accuracy')
 
     # We run paired t-tests between the conditions and print the results
-    t_ab, p_ab = stats.ttest_rel(pivot_df['1'], pivot_df['2'])
-    t_ac, p_ac = stats.ttest_rel(pivot_df['1'], pivot_df['3'])
-    t_bc, p_bc = stats.ttest_rel(pivot_df['2'], pivot_df['3'])
+    t_ab, p_ab = stats.ttest_rel(pivot_df[1], pivot_df[2])
+    t_ac, p_ac = stats.ttest_rel(pivot_df[1], pivot_df[3])
+    t_bc, p_bc = stats.ttest_rel(pivot_df[2], pivot_df[3])
 
     print(f"1 vs 2: t={t_ab:.3f}, p={p_ab:.4f}")
     print(f"1 vs 3: t={t_ac:.3f}, p={p_ac:.4f}")

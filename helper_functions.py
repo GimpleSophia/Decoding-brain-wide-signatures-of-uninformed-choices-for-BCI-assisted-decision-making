@@ -7,7 +7,7 @@ from scipy import fftpack
 import statsmodels.formula.api as smf
 from scipy.stats import norm
 import pandas as pd
-
+import re
 
 
 def my_find(arr,operator, number):
@@ -110,6 +110,40 @@ def extract_labels_from_markers(markers):
                         labels_all.append(0)
     
         return labels,labels_all
+def extract_trial_nums_stims_and_blocks_from_markers(markers):
+        """
+        This function computes labels (informed=third stimulus presentation or uninformed= first stimulus presentation decision making) from the task markers
+        Parameters:
+                    markers: list of task markers, each marker text is saved in a char array
+
+        Returns:
+                    labels: list of integares 1,2,3 corresponding to each trial, 1,2 and 3 correspond to first, second and third stimulus presentation in this trial
+                    labels_all: list of integers 0,1,2,3 corresponding to every marker, 0 is used to capture no label information in this marker
+
+        """
+        #initialize labels and labels_all list
+        trial_number=[]
+        block_number=[]
+        stim_number=[]
+        #iterate over all markers
+        for h in range(len(markers)):
+                    #Stimulus presentation is always represented with a string of format e.g.  ['Start Stim n.: 43 - Rep n.: 1'], the last part indicates whether it is the first
+                    # second or third stimulus presentation
+                    # if it is the first presentation we add a 1         
+                    if 'Sum Trail:' in markers[h][0]:
+                        mark=markers[h][0]
+                        mark_arr=re.split(r":|,",mark)
+                        trial_num=int(mark_arr[1])
+                        print(trial_num)
+                        trial_number.append(trial_num)
+                        stim_number.append(int(mark_arr[2]))
+                        block_number.append((trial_num - 1) // 9 + 1)
+                    else:
+                        trial_number.append(-1)
+                        stim_number.append(-1)
+                        block_number.append(-1)
+    
+        return trial_number, block_number, stim_number
 #function for rereferencing the EEG signal
 def ESR_reref(eeg,channel_arr):
     """
