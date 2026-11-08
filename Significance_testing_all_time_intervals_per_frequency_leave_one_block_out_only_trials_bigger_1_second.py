@@ -1,4 +1,4 @@
-##Prediction per Event and Features
+##Prediction per Event and Features (only includes trials bigger 1s, see supplementary materials figure S3)
 # - performs prediction of informed vs. uninformed decision making
 # - for all oscillatory or time domain features all channels and time-windows are combined
 # -computes whether the prediction roc-AUC is significantly above 0.5 using general linear mixed effects models (This gives warnings as the dataset is relatively small with 6 participants and 10 cross validation iterations). 

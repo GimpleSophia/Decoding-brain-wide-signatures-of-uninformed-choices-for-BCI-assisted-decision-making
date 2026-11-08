@@ -33,6 +33,7 @@ if __name__=='__main__':
     trial_number=[]
     # - time until first press
     time_arr_first=[]
+    image_name_arr=[]
 
     #number of trials with an too early press
     wrong_press_trials=0
@@ -65,6 +66,7 @@ if __name__=='__main__':
                             isfirst=1
                             #we append the presentation number to array labels
                             labels.append(1)
+                            image_name_arr.append(re.findall(r'\d+', markers[h][0])[0])
                         elif 'Rep n.: 2' in markers[h][0]:
                             #we remember the start time
                             start_time=marker_ts[h]
@@ -72,6 +74,7 @@ if __name__=='__main__':
                             isfirst=1
                             #we append the presentation number to array labels
                             labels.append(2)
+                            image_name_arr.append(re.findall(r'\d+', markers[h][0])[0])
                         elif 'Rep n.: 3' in markers[h][0]:
                             #we set a flag that a stimulus was presented, the next button press will be the first
                             isfirst=1
@@ -79,6 +82,8 @@ if __name__=='__main__':
                             start_time=marker_ts[h]
                             #we append the presentation number to array labels
                             labels.append(3)
+                            
+                            image_name_arr.append(re.findall(r'\d+', markers[h][0])[0])
                         #if a button was pressed and we know the start time of the stimulus presentation
                         if "Press" in markers[h][0] and start_time!=np.nan:
                             #if the timing is not incorrect (faster than 1 second after stimulus presentation)
@@ -119,7 +124,7 @@ if __name__=='__main__':
                                 
     #we summarize all behavioral results in a dataframe                
     behavioral_results=pd.DataFrame({"participant":participant_list_results,"trial":trial_number,"label":labels,
-    "is_correct":correct_answer,"time_first_response":time_arr_first})
+    "is_correct":correct_answer,"time_first_response":time_arr_first, "image_name": image_name_arr})
     behavioral_results["time_faster_one_second"]=behavioral_results["time_first_response"]>1
     # Drop rows with NaNs in critical columns
     behavioral_results = behavioral_results.dropna(subset=['is_correct', 'time_first_response', 'label'])
@@ -329,3 +334,4 @@ if __name__=='__main__':
     # We compute and print a table with per-participant means and differences
     full_table = pivot_df.reset_index()
     print(full_table)
+

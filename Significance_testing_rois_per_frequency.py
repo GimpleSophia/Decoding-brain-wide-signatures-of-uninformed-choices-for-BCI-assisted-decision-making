@@ -112,8 +112,10 @@ if __name__=='__main__':
                     #we select the indices of the channels with this roi
                     ind=loc_temp["Index"]
                     #we iterate over all time-windows
+                    print(par,event, freq,roi, len(ind))
                     for i_t,time in enumerate(time_windows_temp):
                         features_new=copy.deepcopy(features)
+                        
                         #we only want to compare informed vs. uninformed decision making so we only include
                         #first and third stimulus presentation and exclude the trials of the second stimulus presentation
                         indices_1_3=my_find(features_new[:,0,-1],'!=',2)[0]
@@ -387,3 +389,18 @@ if __name__=='__main__':
     fig.savefig(path_to_data+"/plots/prediction_per_frequency_per_roi"+relevant_event+".pdf", dpi=700)
     plt.show()
 
+
+
+
+import statsmodels.formula.api as smf
+df_only_press=df_prediction_results[df_prediction_results["event"]=="Press"]
+df_only_press_ant_vs_post=df_only_press[df_only_press["roi"]!="ins"]
+model = smf.mixedlm(
+    "auc ~ C(roi)",
+    data=df_only_press_ant_vs_post,
+    groups=df_only_press_ant_vs_post["participant"],  # random intercept for participant
+    vc_formula={"time": "0 + C(time)"}               # random intercept for time
+)
+
+result = model.fit()
+print(result.summary())

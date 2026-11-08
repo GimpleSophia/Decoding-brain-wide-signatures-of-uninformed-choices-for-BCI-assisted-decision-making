@@ -20,8 +20,8 @@ participants = ["P01","P02","P03","P04","P05","P06"]
 if __name__=='__main__':
 
     # Define paths & initialize mni surface
-    file_left_hemisphere  = path_data/"MNI"/'lh_pial.mat'
-    file_right_hemisphere = path_data/"MNI"/'rh_pial.mat'
+    file_left_hemisphere  = path_data/"MNI"/'lh_pial_trivert.mat'
+    file_right_hemisphere = path_data/"MNI"/'rh_pial_trivert.mat'
     path_cortical_regions = path_data/"MNI"/'label'/'gyri'
     path_subcortical_regions = path_data/"MNI"/'subcortical'
     brain = brainplots.Brain(id_= 'MNI', file_left=  file_left_hemisphere, file_right= file_right_hemisphere)

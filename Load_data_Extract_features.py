@@ -1,4 +1,4 @@
-##Data loading and feature extractsion
+##Data loading and feature extraction
 # - loads the data from all 6 participants performing the Decision-making task.
 # - Loaded data is preprocessed and features are extracted. 
 # - The data is saved in .npz files to be loaded later for further analysis. 

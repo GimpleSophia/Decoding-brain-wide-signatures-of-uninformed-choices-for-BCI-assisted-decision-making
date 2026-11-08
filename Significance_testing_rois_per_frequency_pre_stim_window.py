@@ -1,4 +1,4 @@
-##Prediction per Event, Feature and ROI
+##Prediction per Event, Feature and ROI, here we plot the pre-stim interval as well (referring to Supplementary Figure S5)
 # - performs prediction of informed vs. uninformed decision making
 # -  for  each time window seperately
 # - from all channels from specific regions of interests (rois) combined 

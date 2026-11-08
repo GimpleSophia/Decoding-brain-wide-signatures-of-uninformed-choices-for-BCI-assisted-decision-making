@@ -172,3 +172,21 @@ if __name__=='__main__':
     df_prediction_results['auc_centered'] = df_prediction_results['auc'] - 0.5
     #save the dataframe
     df_prediction_results.to_csv(path_to_data+"/single_channel"+event+freq+"prediction_results.csv")  
+    import pandas as pd
+    import statsmodels.formula.api as smf
+
+    # Example:
+    # df columns:
+    # auc              numeric
+    # participant      categorical/string
+    # is_anterior      0/1 or True/False
+
+    model = smf.mixedlm(
+        "auc ~ is_anterior",
+        data=df_prediction_results,
+        groups=df_prediction_results["participant"]
+    )
+
+    result = model.fit()
+
+    print(result.summary())

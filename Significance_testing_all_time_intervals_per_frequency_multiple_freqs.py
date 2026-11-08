@@ -1,4 +1,4 @@
-##Prediction per Event and Features
+##Prediction per Event and Features, combining multiple features, see supplementary materials S4
 # - performs prediction of informed vs. uninformed decision making
 # - for all oscillatory or time domain features all channels and time-windows are combined
 # -computes whether the prediction roc-AUC is significantly above 0.5 using general linear mixed effects models (This gives warnings as the dataset is relatively small with 6 participants and 10 cross validation iterations). 
@@ -24,6 +24,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import roc_auc_score, accuracy_score
 #functions for statistics
 import statsmodels.formula.api as smf
+from scipy.stats import ttest_rel
 
 ##Settings
 
@@ -34,6 +35,8 @@ event_list=["Start Stim","Press"]
 #(delta, theta, alpha, beta, gamma) and low-frequency filtered
 #time domain signals
 #freq_list=["Delta","Theta","Alpha","Beta","Gamma","LF-time"]
+#here we define the primary frequency for event "Start Stim" this is LF-time  and for "Press"
+#that is gamma, and then we combine it with the other frequencies from freq_list
 #freq_primary=["Gamma"]
 freq_primary=["LF-time"]
 freq_list=["Delta","Theta","Alpha","Beta","Gamma","LF-time"]
@@ -117,6 +120,7 @@ if __name__=='__main__':
                     data2=np.load(path+"output/"+par+event+freq2+str(time_windows[i_e][0])+"_until_"+str(time_windows[i_e][1])+"features.npz")
                     features2=data2["features"]
                     time_windows_temp2=data2["time_array"]
+                    #we combine features from the primary and the other frequencies
                     features_combined=np.concat((features[:,:,:-1],features2),axis=2)
                     print(features_combined.shape)
                     features_new=copy.deepcopy(features_combined)
@@ -232,11 +236,10 @@ if __name__=='__main__':
     df_stats_results.to_csv(path_to_data+"/per_event_freq_all_time_window_statistic_combined_results.csv")  
 
 
-    from scipy.stats import ttest_rel
-    # ==========================================
-    # Compare all combinations against GammaGamma
-    # using a mixed-effects model
-    # ==========================================
+   
+
+    # Compare all combinations against only one frequency band
+  
 
     comparison_sig = {}
     comparison_pvals = {}
@@ -250,7 +253,7 @@ if __name__=='__main__':
 
         freq_order = list(np.unique(df_event["frequency"]))
 
-        # ensure GammaGamma is reference category
+       
         baseline = freq_primary[0]+freq_primary[0]
 
         if baseline not in freq_order:

@@ -1,4 +1,4 @@
-##Prediction per Event and Features
+##Prediction per Event and Features, determine which block (presentation 1,2 or 3) to leave out by setting trial_number_to_leave_out, run for each block as lave out to plop_by_leave_repetition_out
 # - performs prediction of informed vs. uninformed decision making
 # - for all oscillatory or time domain features all channels and time-windows are combined
 # -computes whether the prediction roc-AUC is significantly above 0.5 using general linear mixed effects models (This gives warnings as the dataset is relatively small with 6 participants and 10 cross validation iterations). 
@@ -30,10 +30,12 @@ import statsmodels.formula.api as smf
 #events in the task ("Start Stim" is the start of stimulus presentation,
 #"Press" is the time point when the button is pressed)
 event_list=["Start Stim","Press"]
+#event_list=["Start Stim"]
 #list of the features tested include oscillatory features
 #(delta, theta, alpha, beta, gamma) and low-frequency filtered
 #time domain signals
 freq_list=["Delta","Theta","Alpha","Beta","Gamma","LF-time"]
+#freq_list=["LF-time"]
 #time windows to be extracted by event here we use 1 sencond after stimulus onset and 1 second
 #before button press 
 time_windows=[[0,1000],[-1000,0]]
@@ -41,7 +43,8 @@ time_windows=[[0,1000],[-1000,0]]
 participant_list=["P01","P02","P03","P04","P05","P06"]
 #path to participant data
 path_to_data=str(path_data)
-trial_number_to_leave_out=2
+#determine which block to leave out
+trial_number_to_leave_out=3
 
 ##Define machine learning pipeline
 #we use 10-fold cross-validation
